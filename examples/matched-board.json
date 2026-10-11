@@ -1,0 +1,38 @@
+{
+	"name": "OddsRelay: matched board for one sport",
+	"nodes": [
+		{
+			"parameters": {},
+			"id": "9a3c7d10-5b1e-4f6a-8c21-0d4e2f7b6a01",
+			"name": "When clicking 'Execute workflow'",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"resource": "board",
+				"operation": "getMatched",
+				"board": "standard",
+				"tokenSpend": "cap",
+				"maxTokens": 500,
+				"limit": 20,
+				"filters": {
+					"bookmakers": ["ladbrokes", "william_hill"],
+					"markets": "h2h",
+					"sports": "soccer"
+				}
+			},
+			"id": "4f1b2c3d-6e7f-4a8b-9c0d-1e2f3a4b5c02",
+			"name": "OddsRelay",
+			"type": "n8n-nodes-oddsrelay.oddsRelay",
+			"typeVersion": 1,
+			"position": [220, 0]
+		}
+	],
+	"connections": {
+		"When clicking 'Execute workflow'": {
+			"main": [[{ "node": "OddsRelay", "type": "main", "index": 0 }]]
+		}
+	}
+}

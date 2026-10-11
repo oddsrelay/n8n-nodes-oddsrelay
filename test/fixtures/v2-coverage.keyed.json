@@ -1,0 +1,212 @@
+{
+	"region": "uk",
+	"generated_at": "2026-09-17T02:20:29Z",
+	"products": {
+		"2up": {
+			"bookmakers": [
+				{
+					"key": "betmgm",
+					"name": "BetMGM",
+					"sports": {
+						"soccer": {
+							"events": 5,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betdaq",
+					"name": "Betdaq",
+					"sports": {
+						"soccer": {
+							"events": 149,
+							"last_seen": "2026-09-17T02:20:06Z"
+						}
+					}
+				}
+			]
+		},
+		"bog": {
+			"bookmakers": [
+				{
+					"key": "betfred",
+					"name": "Betfred",
+					"sports": {
+						"horse_racing": {
+							"events": 39,
+							"last_seen": "2026-09-17T02:20:26Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betfair_exchange",
+					"name": "Betfair Exchange",
+					"sports": {
+						"horse_racing": {
+							"events": 38,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			]
+		},
+		"dutching": {
+			"bookmakers": [
+				{
+					"key": "7bet",
+					"name": "7bet",
+					"sports": {
+						"american_football": {
+							"events": 40,
+							"last_seen": "2026-09-17T02:20:14Z"
+						},
+						"aussie_rules": {
+							"events": 11,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betdaq",
+					"name": "Betdaq",
+					"sports": {
+						"american_football": {
+							"events": 61,
+							"last_seen": "2026-09-17T02:20:21Z"
+						},
+						"baseball": {
+							"events": 5,
+							"last_seen": "2026-09-17T02:20:20Z"
+						}
+					}
+				}
+			]
+		},
+		"each-way": {
+			"bookmakers": [
+				{
+					"key": "7bet",
+					"name": "7bet",
+					"sports": {
+						"horse_racing": {
+							"events": 23,
+							"last_seen": "2026-09-17T02:20:22Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betfair_exchange",
+					"name": "Betfair Exchange",
+					"sports": {
+						"horse_racing": {
+							"events": 39,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			]
+		},
+		"extra-place": {
+			"bookmakers": [
+				{
+					"key": "bet600",
+					"name": "Bet600",
+					"sports": {
+						"horse_racing": {
+							"events": 5,
+							"last_seen": "2026-09-17T02:20:22Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betfair_exchange",
+					"name": "Betfair Exchange",
+					"sports": {
+						"horse_racing": {
+							"events": 14,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			]
+		},
+		"raw": {
+			"bookmakers": [
+				{
+					"key": "7bet",
+					"name": "7bet",
+					"sports": {
+						"american_football": {
+							"events": 71,
+							"last_seen": "2026-09-17T02:20:14Z"
+						},
+						"aussie_rules": {
+							"events": 11,
+							"last_seen": "2026-09-17T02:20:18Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betdaq",
+					"name": "Betdaq",
+					"sports": {
+						"american_football": {
+							"events": 69,
+							"last_seen": "2026-09-17T02:20:21Z"
+						},
+						"aussie_rules": {
+							"events": 2,
+							"last_seen": "2026-09-17T02:20:21Z"
+						}
+					}
+				}
+			]
+		},
+		"standard": {
+			"bookmakers": [
+				{
+					"key": "7bet",
+					"name": "7bet",
+					"sports": {
+						"american_football": {
+							"events": 71,
+							"last_seen": "2026-09-17T02:20:14Z"
+						},
+						"baseball": {
+							"events": 16,
+							"last_seen": "2026-09-17T02:20:24Z"
+						}
+					}
+				}
+			],
+			"exchanges": [
+				{
+					"key": "betdaq",
+					"name": "Betdaq",
+					"sports": {
+						"american_football": {
+							"events": 69,
+							"last_seen": "2026-09-17T02:20:21Z"
+						},
+						"aussie_rules": {
+							"events": 2,
+							"last_seen": "2026-09-17T02:20:21Z"
+						}
+					}
+				}
+			]
+		}
+	}
+}

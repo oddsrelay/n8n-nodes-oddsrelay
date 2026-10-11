@@ -1,0 +1,57 @@
+# Publishes this n8n community node to npm with a provenance statement when a version tag (such as 0.1.0) is
+# pushed. n8n requires community nodes to be published from GitHub Actions with provenance (since 1 May 2026):
+# https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/
+#
+# One-time setup on npmjs.com, either:
+#   A. Trusted publishing (no secret anywhere): the package's Settings, Trusted Publisher, GitHub Actions,
+#      repository owner oddsrelay, repository n8n-nodes-oddsrelay, workflow publish.yml, no environment.
+#      An unused trusted-publisher setting lapses after 48 hours, so push the tag within that time.
+#   B. If npm will not take a trusted publisher before the package exists: a granular access token saved as the
+#      repository secret NPM_TOKEN for the first release only, then delete it and switch to A.
+# Both publish with provenance: GitHub signs it through OIDC (id-token: write below).
+#
+# `npm run release` runs `n8n-node release`, which inside GitHub Actions lints, builds and runs `npm publish`
+# with provenance on. Trusted publishing needs npm 11.5.1 or later, so check-latest fetches the newest Node 24.
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Mints the OIDC token for trusted publishing and the provenance statement.
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: '24'
+          check-latest: true
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Tag matches package.json
+        run: test "$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Test
+        run: npm test
+
+      - name: Release
+        run: |
+          [ -n "$NPM_TOKEN" ] && npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          npm run release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
