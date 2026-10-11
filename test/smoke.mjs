@@ -176,6 +176,18 @@ await step(
 	},
 	(o) => `priced at ${o[0].json.cost} tokens`,
 );
+try {
+	// Soccer starts several pages into the sport list, so this checks the search reads on.
+	const r = await node.methods.listSearch.searchSports.call(context({}), 'england premier');
+	need(
+		r.results.some((s) => s.value === 'soccer_england_premier_league'),
+		'England Premier League not found',
+	);
+	console.log(`ok   sport search: ${r.results.length} match(es)`);
+} catch (err) {
+	failed++;
+	console.log(`FAIL sport search: ${hide(err.message)}`);
+}
 await step('a wrong key is refused clearly', { resource: 'account', operation: 'getUsage' }, null, {
 	apiKey: 'not-a-real-key',
 	refused: /did not accept the API key/,

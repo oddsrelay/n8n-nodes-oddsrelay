@@ -147,10 +147,11 @@ function toNodeError(this: Context, res: IN8nHttpFullResponse, itemIndex: number
 				ref;
 			break;
 		default: {
+			// The message already carries the API's words, so the description only says what to do next.
 			const valid = Array.isArray(error.valid)
-				? ` Accepted values: ${error.valid.join(', ')}.`
-				: '';
-			description = `${apiMessage ?? 'Try again shortly.'}${valid} Code: ${code}.${ref}`;
+				? `Accepted values: ${error.valid.join(', ')}.`
+				: 'Check the values set in this node.';
+			description = `${res.statusCode >= 500 ? 'Try again in a minute.' : valid} Code: ${code}.${ref}`;
 		}
 	}
 	return new NodeApiError(this.getNode(), { ...error, code } as JsonObject, {

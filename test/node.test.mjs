@@ -200,7 +200,7 @@ test('events: the sport comes from the resource locator; one page is enough for 
 		{
 			resource: 'event',
 			operation: 'getAll',
-			sport: { __rl: true, mode: 'list', value: 'soccer_epl' },
+			sport: { __rl: true, mode: 'list', value: 'soccer_england_premier_league' },
 			returnAll: false,
 			limit: 1,
 			filters: { commenceTimeFrom: '2026-10-12T00:00:00Z' },
@@ -210,7 +210,10 @@ test('events: the sport comes from the resource locator; one page is enough for 
 	const [out] = await execute(ctx);
 	assert.equal(calls.length, 1);
 	assert.equal(calls[0].url, 'https://api.oddsrelay.io/v2/events');
-	assert.deepEqual(calls[0].qs, { commenceTimeFrom: '2026-10-12T00:00:00Z', sport: 'soccer_epl' });
+	assert.deepEqual(calls[0].qs, {
+		commenceTimeFrom: '2026-10-12T00:00:00Z',
+		sport: 'soccer_england_premier_league',
+	});
 	assert.equal(out.length, 1);
 });
 
@@ -281,7 +284,8 @@ test('401, 402, 400 and 403 become errors that say what to change', async () => 
 
 	err = await run(400, 'error-400.unknown_bookmaker.json');
 	assert.match(err.message, /Unknown bookmaker 'nope'/);
-	assert.match(err.description, /Accepted values: 7bet, 888sport/);
+	assert.match(err.description, /^Accepted values: 7bet, 888sport/);
+	assert.equal(err.description.includes(err.message), false, 'the description repeats the message');
 
 	err = await run(403, 'error-403.bookmaker_not_in_plan.json');
 	assert.match(err.description, /Get Usage/);
@@ -331,13 +335,24 @@ test('list helpers: exchanges, venues and the sport search', async () => {
 	assert.equal(venues.length, catalogue.data.length);
 
 	const sports = fixture('v2-sports.page.json');
-	const found = context({}, [ok(sports)]);
-	const result = await node.methods.listSearch.searchSports.call(
-		found.ctx,
-		sports.data[0].title.slice(0, 4),
-	);
-	assert.ok(result.results.some((r) => r.value === sports.data[0].key));
+	const browse = context({}, [ok(sports)]);
+	let result = await node.methods.listSearch.searchSports.call(browse.ctx);
+	assert.equal(browse.calls.length, 1, 'browsing reads one page at a time');
+	assert.equal(result.results.length, sports.data.length);
 	assert.equal(result.paginationToken, sports.meta.next_cursor);
+
+	// A competition on a later page is still found: a search reads on until it has matches or the list ends.
+	const epl = {
+		key: 'soccer_england_premier_league',
+		group: 'Soccer',
+		title: 'England Premier League',
+	};
+	const search = context({}, [ok(sports), page([epl], null)]);
+	result = await node.methods.listSearch.searchSports.call(search.ctx, 'England Premier');
+	assert.equal(search.calls.length, 2);
+	assert.equal(search.calls[1].qs.cursor, sports.meta.next_cursor);
+	assert.deepEqual(result.results, [{ name: 'Soccer: England Premier League', value: epl.key }]);
+	assert.equal(result.paginationToken, undefined);
 });
 
 test('query and time helpers', () => {

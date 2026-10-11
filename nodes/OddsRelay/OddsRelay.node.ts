@@ -3,6 +3,7 @@ import type {
 	IExecuteFunctions,
 	ILoadOptionsFunctions,
 	INodeExecutionData,
+	INodeListSearchItems,
 	INodeListSearchResult,
 	INodeProperties,
 	INodePropertyOptions,
@@ -429,7 +430,7 @@ export class OddsRelay implements INodeType {
 					name: 'leagues',
 					type: 'string',
 					default: '',
-					placeholder: 'e.g. soccer_epl',
+					placeholder: 'e.g. soccer_england_premier_league',
 					description: 'Comma-separated competition keys',
 				},
 				marketsList,
@@ -489,13 +490,14 @@ export class OddsRelay implements INodeType {
 						displayName: 'By Key',
 						name: 'id',
 						type: 'string',
-						placeholder: 'e.g. soccer_epl',
+						placeholder: 'e.g. soccer_england_premier_league',
 						validation: [
 							{
 								type: 'regex',
 								properties: {
 									regex: '^[a-z0-9_.-]+$',
-									errorMessage: 'Use a lowercase key such as soccer or soccer_epl',
+									errorMessage:
+										'Use a lowercase key such as soccer or soccer_england_premier_league',
 								},
 							},
 						],
@@ -536,15 +538,23 @@ export class OddsRelay implements INodeType {
 				filter?: string,
 				paginationToken?: string,
 			): Promise<INodeListSearchResult> {
-				const page = await apiGet.call(this, '/v2/sports', { cursor: paginationToken });
+				// The API has no search, and the list runs to several pages sorted by sport, so a search reads on
+				// through the pages (free) until it has a screenful of matches or reaches the end.
 				const term = filter?.trim().toLowerCase();
-				const results = rowsOf(page)
-					.map((s) => ({
-						name: s.group && s.group !== s.title ? `${s.group}: ${s.title}` : String(s.title),
-						value: String(s.key),
-					}))
-					.filter((s) => !term || s.name.toLowerCase().includes(term) || s.value.includes(term));
-				return { results, paginationToken: nextCursor(page) };
+				const results: INodeListSearchItems[] = [];
+				let cursor = paginationToken;
+				do {
+					const page = await apiGet.call(this, '/v2/sports', { cursor });
+					for (const s of rowsOf(page)) {
+						const name =
+							s.group && s.group !== s.title ? `${s.group}: ${s.title}` : String(s.title);
+						const value = String(s.key);
+						if (!term || name.toLowerCase().includes(term) || value.includes(term))
+							results.push({ name, value });
+					}
+					cursor = nextCursor(page);
+				} while (term && cursor && results.length < 50);
+				return { results, paginationToken: cursor };
 			},
 		},
 	};
@@ -641,7 +651,8 @@ async function run(this: IExecuteFunctions, op: string, i: number): Promise<IDat
 			if (!sport) {
 				throw new NodeOperationError(this.getNode(), "'Sport' is empty", {
 					itemIndex: i,
-					description: 'Choose a sport from the list, or enter a key such as soccer_epl.',
+					description:
+						'Choose a sport from the list, or enter a key such as soccer_england_premier_league.',
 				});
 			}
 			const f = filters('filters');

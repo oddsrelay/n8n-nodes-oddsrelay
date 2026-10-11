@@ -44,9 +44,9 @@ encrypted, and the node never writes it to its output or its error messages.
 | Account | Get Usage | Your plan, token balance, reset time and the key's scope | None |
 
 Lists take **Return All** or a **Limit**. The bookmaker and exchange filters load their choices from the API, and
-the sport for Event, Get Many can be picked from a searchable list or typed as a key such as `soccer_epl`. Most
-operations also take a **Region** (left empty, the API uses `uk`); the odds operations take an **Odds Format**
-(decimal or moneyline) and a **Date Format** (ISO 8601 or Unix seconds).
+the sport for Event, Get Many can be picked from a searchable list or typed as a key such as
+`soccer_england_premier_league`. Most operations also take a **Region** (left empty, the API uses `uk`); the odds
+operations take an **Odds Format** (decimal or moneyline) and a **Date Format** (ISO 8601 or Unix seconds).
 
 ## Token Spend
 
