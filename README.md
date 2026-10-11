@@ -5,8 +5,8 @@ Irish bookmakers, with Betfair, Smarkets, Matchbook and BETDAQ lay prices. Read 
 prices paired with exchange lay prices), the raw board of every price, one event's prices, and the sport, event
 and bookmaker lists behind them, in any workflow or as a tool for an n8n AI Agent.
 
-Every call that spends tokens can ask the API for its price first, which is free, and stop above a cap you set,
-so a workflow or an agent cannot run down your token balance by accident.
+Every call that spends tokens can ask the API for its price first, which is free, and stop above a cap you set
+for each input item (**Max Tokens**). The cap stays where you set it unless you let an AI Agent's model fill it.
 
 [Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) ·
 [Token Spend](#token-spend) · [Use with AI agents](#use-with-ai-agents) · [Example workflows](#example-workflows) ·

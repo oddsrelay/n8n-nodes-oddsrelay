@@ -81,8 +81,8 @@ prices. This node reads it in any workflow or as an AI Agent tool: matched board
 with exchange lay prices, on Standard, 2Up, Dutching, Each Way, Extra Place and BOG boards), the raw board of every
 bookmaker and exchange price, one event's prices, and the sport, event, bookmaker, coverage and account lists
 behind them. Calls that spend tokens can ask the API for their price first, which is free, and stop above a cap
-the user sets, so a workflow or an agent cannot run down the account by accident. One credential (an API key,
-tested against a free route), no runtime dependencies.
+the user sets for each input item. The cap stays where the user set it unless they let an AI Agent's model fill
+it. One credential (an API key, tested against a free route), no runtime dependencies.
 
 **Categories:** Data & Storage, Development
 
