@@ -3,6 +3,10 @@
 	"version": "0.1.0",
 	"description": "n8n node for the OddsRelay odds API: matched boards, raw bookmaker and exchange prices, events and sports, with a token cap on every call that spends tokens.",
 	"license": "MIT",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
 	"homepage": "https://oddsrelay.io",
 	"keywords": [
 		"n8n-community-node-package",
