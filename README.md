@@ -1,7 +1,7 @@
 # n8n-nodes-oddsrelay
 
 An [n8n](https://n8n.io/) community node for [OddsRelay](https://oddsrelay.io), the pre-match odds API for UK and
-Irish bookmakers, with Betfair, Smarkets, Matchbook and BETDAQ lay prices. Read matched boards (bookmaker back
+Irish bookmakers, with Betfair, Smarkets and Matchbook lay prices. Read matched boards (bookmaker back
 prices paired with exchange lay prices), the raw board of every price, one event's prices, and the sport, event
 and bookmaker lists behind them, in any workflow or as a tool for an n8n AI Agent.
 

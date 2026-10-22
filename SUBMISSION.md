@@ -76,7 +76,7 @@ author email should be the same address. Then submit the node. Texts for the for
 Read pre-match odds from UK and Irish bookmakers and exchanges: matched boards, raw prices, events and sports
 
 **Long description:**
-OddsRelay is a pre-match odds API for UK and Irish bookmakers, with Betfair, Smarkets, Matchbook and BETDAQ lay
+OddsRelay is a pre-match odds API for UK and Irish bookmakers, with Betfair, Smarkets and Matchbook lay
 prices. This node reads it in any workflow or as an AI Agent tool: matched boards (bookmaker back prices paired
 with exchange lay prices, on Standard, 2Up, Dutching, Each Way, Extra Place and BOG boards), the raw board of every
 bookmaker and exchange price, one event's prices, and the sport, event, bookmaker, coverage and account lists
