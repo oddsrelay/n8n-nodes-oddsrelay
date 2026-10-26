@@ -84,9 +84,13 @@ Ladbrokes and William Hill, the `h2h` market only, capped at 500 tokens, first 2
 API credential on the OddsRelay node, then run it. Each output item is one event, with its markets, the back price
 at each bookmaker and the lay prices beside them.
 
-**Odds into a sheet on a schedule.** Schedule Trigger, then OddsRelay (Board, Get Matched, with your filters),
-then Google Sheets (Append or Update Row), mapping `event_id`, `commence_time` and the prices you need. Run Board,
-Get Matched once with Token Spend set to Price Only to see what each run will cost.
+**Close back and lay prices into a sheet, on a schedule.**
+[`examples/back-lay-alerts.json`](examples/back-lay-alerts.json): a Schedule Trigger, a Settings node (your
+exchange commission, the lowest rating to keep, the least lay money), OddsRelay reading the Standard board for the
+`h2h` market at Ladbrokes, William Hill and Paddy Power with Check Price First, a Code node that rates each
+bookmaker back price against the lowest exchange lay (back / lay x 100, and after your commission), then Filter,
+Sort and Google Sheets (Append). Pick your OddsRelay credential, connect Google Sheets and choose a blank sheet,
+then run it once. Run Board, Get Matched once with Token Spend set to Price Only to see what each run will cost.
 
 **An odds assistant.** Chat Trigger, then an AI Agent with a chat model and OddsRelay as a tool (Board, Get
 Matched with Token Spend on Check Price First, plus Sport, Get Many and Bookmaker, Get Many). Ask it, for example,

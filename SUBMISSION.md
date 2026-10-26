@@ -114,3 +114,53 @@ with the node as a tool.
 
 n8n lists verified nodes in the nodes panel, including on n8n Cloud. Record the outcome as `devrel: done L45`
 with the listing URL.
+
+## 7. Workflow template: close back and lay prices to Google Sheets
+
+n8n's template rules (read 26 Oct 2026) turn away a trigger wired to one action, so `examples/matched-board.json`
+stays the README's quick start and `examples/back-lay-alerts.json` is the template. It imports with every
+sticky note n8n asks for: one yellow overview note at the top left (How it works, Setup, Customization) and a
+white note over each group of nodes. The OddsRelay credential is referenced by name only, the Google Sheets
+node has no credential, and no key is anywhere in the file.
+
+Nodes, in order: Schedule Trigger, Settings (Edit Fields: commission, lowest rating, least lay money), OddsRelay
+(Board, Get Matched, Standard, Token Spend Check Price First), Code (one row per back price beside the lowest
+lay, rated), Filter, Sort, Google Sheets (append, columns mapped automatically).
+
+Tested on 26 Oct 2026 with n8n 2.43.7 and the published node: one live run, its rows and ratings checked
+against an independent calculation, then runs on saved data for a missing back price, a missing lay price, an
+outcome with no lay, a line market and a run where nothing qualifies (nothing is written). The Google Sheets
+step was not run: it needs a Google account, so connect one, pick a sheet and run the template once in n8n
+Cloud before submitting it.
+
+**Title:**
+Log close back and lay prices to Google Sheets with OddsRelay
+
+**Description** (markdown, pasted as it stands):
+
+```markdown
+## Who it's for
+
+People in the UK and Ireland who build oddsmatchers, price alerts or their own spreadsheets from bookmaker and exchange prices, and want a running log of close back and lay prices without writing an app.
+
+## How it works
+
+1. A Schedule Trigger starts each run.
+2. **Settings** holds your exchange commission, the lowest rating to keep and the least money you need available at the lay price.
+3. The **OddsRelay** node reads the Standard matched board: football's match result market at Ladbrokes, William Hill and Paddy Power, beside lay prices from Betfair, Smarkets and Matchbook. Its token guard asks the API what the call costs first, which is free, and makes the call only if the price is within Max Tokens.
+4. A **Code** node makes one row per bookmaker back price beside the lowest exchange lay for the same outcome, with two ratings: back / lay x 100, and back x (1 - commission) / (lay - commission) x 100. The prices carry no commission, so the workflow applies yours.
+5. A **Filter** keeps rows at or above your rating with enough money at the lay price, a **Sort** puts the best first, and **Google Sheets** appends them with the time they were checked. When nothing qualifies, nothing is written.
+
+## Setup
+
+1. Add the OddsRelay node: it is a verified community node, so search for OddsRelay in the nodes panel. On self-hosted n8n you can also install `n8n-nodes-oddsrelay` from Settings, Community nodes.
+2. Sign up at [app.oddsrelay.io](https://app.oddsrelay.io/signup) and add your API key as an OddsRelay API credential. Free gives you 50,000 tokens for 14 days from sign-up, with no card, then no tokens until you choose a plan, on the same key. Paid plans are for your own use, and a tool that serves other people runs on Enterprise.
+3. Connect a Google Sheets credential and pick a blank spreadsheet and sheet in the last node. The first run writes the column names.
+4. Set your commission and thresholds in **Settings**, run the workflow once, then publish it so the schedule runs.
+
+## Customization
+
+- Change the sport, bookmakers, exchanges or market in the OddsRelay node's filters. Each one you name changes the call's price, and Max Tokens stops a call priced above it.
+- Run it more or less often in the Schedule Trigger. Each run spends the call's price.
+- Send the rows to Slack or email instead of a sheet.
+```

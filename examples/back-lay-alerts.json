@@ -1,0 +1,334 @@
+{
+	"name": "Log close back and lay prices to Google Sheets with OddsRelay",
+	"nodes": [
+		{
+			"parameters": {
+				"content": "## Log close back and lay prices to Google Sheets\n\n### How it works\nOn a schedule, this workflow reads the OddsRelay Standard matched board for football's match result market at Ladbrokes, William Hill and Paddy Power, beside lay prices from Betfair, Smarkets and Matchbook.\n1. **Settings** holds your exchange commission, the lowest rating to keep and the least lay money you need.\n2. **Get matched board** asks the API what the call costs first (free) and reads the board only if the price is within Max Tokens.\n3. **Rate back against lay** makes one row per bookmaker price beside the lowest exchange lay, with its rating (back / lay x 100) and the rating after your commission. The prices carry no commission, so the workflow applies yours.\n4. Rows at or above your rating are sorted best first and added to your sheet. When nothing qualifies, nothing is written.\n\n### Setup\n1. Sign up at [app.oddsrelay.io](https://app.oddsrelay.io/signup) and add your API key as an **OddsRelay API** credential in **Get matched board**. Free gives you 50,000 tokens for 14 days from sign-up, with no card, then no tokens until you choose a plan, on the same key.\n2. Connect a Google Sheets credential and pick a blank spreadsheet and sheet in **Append rows to Google Sheets**. The first run writes the column names.\n3. Set your values in **Settings**, run it once, then publish (or activate) it.\n\n### Customization\n- Change the sport, bookmakers, exchanges or market in the board's filters. Each one changes the call's price, and Max Tokens stops anything above it.\n- Change the schedule or the thresholds. Each run spends the call's price.\n- Send the rows to Slack or email instead of a sheet.",
+				"height": 900,
+				"width": 640,
+				"color": 1
+			},
+			"id": "0f6c2a1e-7d3b-4c58-9a10-3b2e5f8d1c01",
+			"name": "Overview",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				-700,
+				0
+			]
+		},
+		{
+			"parameters": {
+				"content": "## 1. Read the board\nYour settings, then the Standard matched board for one sport, a few bookmakers and one market.\nThe call is priced first (free) and skipped above Max Tokens.",
+				"height": 320,
+				"width": 700,
+				"color": 7
+			},
+			"id": "0f6c2a1e-7d3b-4c58-9a10-3b2e5f8d1c02",
+			"name": "Section: read the board",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				-20,
+				140
+			]
+		},
+		{
+			"parameters": {
+				"content": "## 2. Rate and keep the close ones\nOne row per bookmaker back price beside the lowest exchange lay, rated with and without commission.\nKeeps rows at or above your rating, best first.",
+				"height": 320,
+				"width": 700,
+				"color": 7
+			},
+			"id": "0f6c2a1e-7d3b-4c58-9a10-3b2e5f8d1c03",
+			"name": "Section: rate and keep",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				720,
+				140
+			]
+		},
+		{
+			"parameters": {
+				"content": "## 3. Log them\nEach kept row is added to your sheet with the time it was checked.",
+				"height": 320,
+				"width": 300,
+				"color": 7
+			},
+			"id": "0f6c2a1e-7d3b-4c58-9a10-3b2e5f8d1c04",
+			"name": "Section: log them",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [
+				1460,
+				140
+			]
+		},
+		{
+			"parameters": {
+				"rule": {
+					"interval": [
+						{
+							"field": "minutes",
+							"minutesInterval": 15
+						}
+					]
+				}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d01",
+			"name": "Every 15 minutes",
+			"type": "n8n-nodes-base.scheduleTrigger",
+			"typeVersion": 1.2,
+			"position": [
+				40,
+				300
+			]
+		},
+		{
+			"parameters": {
+				"assignments": {
+					"assignments": [
+						{
+							"id": "a1f0c3d2-1b4e-4f6a-9c8d-7e6f5a4b3c01",
+							"name": "commissionPercent",
+							"value": 2,
+							"type": "number"
+						},
+						{
+							"id": "a1f0c3d2-1b4e-4f6a-9c8d-7e6f5a4b3c02",
+							"name": "minRating",
+							"value": 95,
+							"type": "number"
+						},
+						{
+							"id": "a1f0c3d2-1b4e-4f6a-9c8d-7e6f5a4b3c03",
+							"name": "minLayAvailable",
+							"value": 20,
+							"type": "number"
+						}
+					]
+				},
+				"options": {}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d02",
+			"name": "Settings",
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [
+				260,
+				300
+			]
+		},
+		{
+			"parameters": {
+				"resource": "board",
+				"operation": "getMatched",
+				"board": "standard",
+				"tokenSpend": "cap",
+				"maxTokens": 200,
+				"returnAll": true,
+				"filters": {
+					"bookmakers": [
+						"ladbrokes",
+						"william_hill",
+						"paddy_power"
+					],
+					"markets": "h2h",
+					"sports": "soccer"
+				},
+				"options": {}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d03",
+			"name": "Get matched board",
+			"type": "n8n-nodes-oddsrelay.oddsRelay",
+			"typeVersion": 1,
+			"position": [
+				480,
+				300
+			],
+			"credentials": {
+				"oddsRelayApi": {
+					"name": "OddsRelay account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"jsCode": "// One row per bookmaker back price, beside the lowest exchange lay for the same outcome.\n// rating = back / lay x 100. With commission c (a fraction), the rating after commission is\n// back x (1 - c) / (lay - c) x 100, the same figure when c is 0.\nconst c = Number($('Settings').first().json.commissionPercent) / 100;\nconst round = (x) => Math.round(x * 100) / 100;\nconst checkedAt = DateTime.now().setZone('Europe/London').toFormat('yyyy-MM-dd HH:mm');\nconst rows = [];\n\nfor (const [index, item] of $input.all().entries()) {\n  const ev = item.json;\n  const event = ev.home_team && ev.away_team ? `${ev.home_team} v ${ev.away_team}` : (ev.event_name ?? ev.event_id);\n  const kickOff = ev.commence_time\n    ? DateTime.fromISO(ev.commence_time).setZone('Europe/London').toFormat('ccc d LLL HH:mm')\n    : '';\n  for (const market of ev.markets ?? []) {\n    for (const outcome of market.outcomes ?? []) {\n      const lays = Array.isArray(outcome.lay) ? outcome.lay.filter((l) => l.price > 1) : [];\n      if (!lays.length) continue;\n      const lay = lays.reduce((best, l) => (l.price < best.price ? l : best));\n      for (const back of outcome.back ?? []) {\n        if (!(back.price > 1)) continue;\n        rows.push({\n          json: {\n            checked_at: checkedAt,\n            kick_off: kickOff,\n            competition: ev.sport_title,\n            event,\n            market: market.key,\n            outcome: outcome.point == null ? outcome.name : `${outcome.name} ${outcome.point}`,\n            bookmaker: back.bookmaker,\n            back: back.price,\n            exchange: lay.exchange,\n            lay: lay.price,\n            lay_available: lay.available ?? 0,\n            rating: round((back.price / lay.price) * 100),\n            rating_after_commission: round(((back.price * (1 - c)) / (lay.price - c)) * 100),\n            back_link: back.link,\n            lay_link: lay.link,\n            event_id: ev.event_id,\n          },\n          pairedItem: { item: index },\n        });\n      }\n    }\n  }\n}\n\nreturn rows;\n"
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d04",
+			"name": "Rate back against lay",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [
+				780,
+				300
+			]
+		},
+		{
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 2
+					},
+					"conditions": [
+						{
+							"id": "c2e1d0f3-4a5b-4c6d-8e7f-9a0b1c2d3e01",
+							"leftValue": "={{ $json.rating_after_commission }}",
+							"rightValue": "={{ $('Settings').first().json.minRating }}",
+							"operator": {
+								"type": "number",
+								"operation": "gte"
+							}
+						},
+						{
+							"id": "c2e1d0f3-4a5b-4c6d-8e7f-9a0b1c2d3e02",
+							"leftValue": "={{ $json.lay_available }}",
+							"rightValue": "={{ $('Settings').first().json.minLayAvailable }}",
+							"operator": {
+								"type": "number",
+								"operation": "gte"
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d05",
+			"name": "Keep close matches",
+			"type": "n8n-nodes-base.filter",
+			"typeVersion": 2.2,
+			"position": [
+				1000,
+				300
+			]
+		},
+		{
+			"parameters": {
+				"sortFieldsUi": {
+					"sortField": [
+						{
+							"fieldName": "rating_after_commission",
+							"order": "descending"
+						}
+					]
+				},
+				"options": {}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d06",
+			"name": "Best rating first",
+			"type": "n8n-nodes-base.sort",
+			"typeVersion": 1,
+			"position": [
+				1220,
+				300
+			]
+		},
+		{
+			"parameters": {
+				"operation": "append",
+				"documentId": {
+					"__rl": true,
+					"mode": "list",
+					"value": ""
+				},
+				"sheetName": {
+					"__rl": true,
+					"mode": "list",
+					"value": ""
+				},
+				"columns": {
+					"mappingMode": "autoMapInputData",
+					"value": {},
+					"matchingColumns": [],
+					"schema": []
+				},
+				"options": {}
+			},
+			"id": "6b1d4e2a-3c5f-4a7b-8d9e-0f1a2b3c4d07",
+			"name": "Append rows to Google Sheets",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [
+				1540,
+				300
+			]
+		}
+	],
+	"connections": {
+		"Every 15 minutes": {
+			"main": [
+				[
+					{
+						"node": "Settings",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Settings": {
+			"main": [
+				[
+					{
+						"node": "Get matched board",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get matched board": {
+			"main": [
+				[
+					{
+						"node": "Rate back against lay",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Rate back against lay": {
+			"main": [
+				[
+					{
+						"node": "Keep close matches",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Keep close matches": {
+			"main": [
+				[
+					{
+						"node": "Best rating first",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Best rating first": {
+			"main": [
+				[
+					{
+						"node": "Append rows to Google Sheets",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"settings": {
+		"executionOrder": "v1"
+	}
+}
