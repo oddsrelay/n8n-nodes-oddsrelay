@@ -154,7 +154,7 @@ People in the UK and Ireland who build oddsmatchers, price alerts or their own s
 ## Setup
 
 1. Add the OddsRelay node: it is a verified community node, so search for OddsRelay in the nodes panel. On self-hosted n8n you can also install `n8n-nodes-oddsrelay` from Settings, Community nodes.
-2. Sign up at [app.oddsrelay.io](https://app.oddsrelay.io/signup) and add your API key as an OddsRelay API credential. Free gives you 50,000 tokens for 14 days from sign-up, with no card, then no tokens until you choose a plan, on the same key. Paid plans are for your own use, and a tool that serves other people runs on Enterprise.
+2. Sign up at [app.oddsrelay.io](https://app.oddsrelay.io/signup) and add your API key as an OddsRelay API credential. Free gives you 50,000 tokens for 14 days from sign-up, with no card, then no tokens until you choose a plan, on the same key. Paid plans are for personal use. Any business, even one using the data only in-house, and any product that serves other people runs on Enterprise; a business can try the data on Free first.
 3. Connect a Google Sheets credential and pick a blank spreadsheet and sheet in the last node. The first run writes the column names.
 4. Set your commission and thresholds in **Settings**, run the workflow once, then publish it so the schedule runs.
 
